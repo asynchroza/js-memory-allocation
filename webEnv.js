@@ -1,25 +1,25 @@
 export const envFiles = {
-    'index.js': {
-        file: {
-            contents: `console.log("HELLO WORLD");`
-        }
-    },
-    'package.json': {
-        file: {
-            contents: `
-{
-  "name": "example-app",
-  "type": "module",
-  "dependencies": {
-    "express": "latest",
-    "nodemon": "latest"
+  'index.js': {
+    file: {
+      contents: `
+              import { getHeapSnapshot } from 'node:v8';
+              console.log(getHeapSnapshot());
+            `
+    }
   },
+  'package.json': {
+    file: {
+      contents: `
+{
+  "name": "app",
+  "type": "module",
+  "dependencies": {},
   "scripts": {
     "start": "node index.js"
   }
 }`
-        }
     }
+  }
 }
 
 export async function spawnProcess(asyncProcessCallback) {
