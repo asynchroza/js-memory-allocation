@@ -2,8 +2,14 @@ export const envFiles = {
   'index.js': {
     file: {
       contents: `
-              import { getHeapSnapshot } from 'node:v8';
+              import { getHeapSnapshot, getHeapStatistics } from 'node:v8';
+
+              console.log(getHeapSnapshot())
+              console.log(getHeapStatistics());
+
+              const a = [5, 7, 8];
               console.log(getHeapSnapshot());
+              console.log(getHeapStatistics());
             `
     }
   },
