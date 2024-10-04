@@ -11,6 +11,8 @@ export const envFiles = {
             fs.mkdirSync('node_modules/v8-profiler-next/build/binding/Release/node-v108-linux-x64', { recursive: true })
             fs.writeFileSync('node_modules/v8-profiler-next/build/binding/Release/node-v108-linux-x64/profiler.node', buf);
 
+            const something = import('v8-profiler-node8');
+
             const scriptContent = 'const profiler = import("v8-profiler-node8");';
 
             fs.writeFile('load_native_bindings.js', scriptContent, (err) => {
@@ -61,7 +63,7 @@ export const envFiles = {
             "v8-profiler-node8": "7.4.0"
     },
     "scripts": {
-        "start": "node --allow-addons index.js"
+        "start": "node --no-addons=false index.js"
     }
 } `
         }
