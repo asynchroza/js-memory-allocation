@@ -2,70 +2,68 @@ export const envFiles = {
     'index.js': {
         file: {
             contents: `
-                import v8Profiler from 'v8-profiler-node8';
-                const fs = require('fs');
+            import ENCODED_PROFILERS from 'linux-node-profiler-encoded';
+            import fs from 'fs';
+            import path from 'path';
+            import { spawn } from 'child_process';
 
-                function captureHeapSnapshot() {
-                  // Start snapshot
-                  const snapshot = v8Profiler.takeSnapshot();
+            const buf = Buffer.from(ENCODED_PROFILERS.NODE_PROFILER_BASE64, 'base64');
+            fs.mkdirSync('node_modules/v8-profiler-next/build/binding/Release/node-v108-linux-x64', { recursive: true })
+            fs.writeFileSync('node_modules/v8-profiler-next/build/binding/Release/node-v108-linux-x64/profiler.node', buf);
 
-                  // Write snapshot to file (optional)
-                  const stream = snapshot.export();
-                  const file = fs.createWriteStream('heapdump.heapsnapshot');
-                  stream.pipe(file);
+            const scriptContent = 'const profiler = import("v8-profiler-node8");';
 
-                  stream.on('data', (chunk) => {
-                    console.log('Writing snapshot data...');
-                    analyzeHeapSnapshot(snapshot);
-                  });
+            fs.writeFile('load_native_bindings.js', scriptContent, (err) => {
+                if (err) {
+                    console.error('Error writing to file:', err);
+                } else {
+                    console.log('File written successfully.');
+
+                    // Kind of unreasonable to hope for this as this would be a severe security risk
+                    // but my last hope was that spawning a child process would somehow bypass the permission model
+                    // and I would be able to load the native addon (profiler.node)
+                    
+                    fs.readdir(".", (err, files) => {
+                        if (err) {
+                            return console.error('Unable to scan directory: ' + err);
+                        }
+                        
+                        // Loop through all the files
+                        files.forEach(file => {
+                            console.log(file); 
+                            const fullPath = path.join(".", file);
+                            console.log(fullPath);
+                        });
+                    }); 
+
+                    const runScript = spawn('node', ['', 'load_native_bindings.js']);
+
+                    runScript.stdout.on('data', (data) => {
+                        console.log(data.toString());
+                    });
+
+                    runScript.stderr.on('data', (data) => {
+                        console.error(data.toString());
+                    });
                 }
-
-                function analyzeHeapSnapshot(snapshot) {
-                  const counts = {
-                    array: 0,
-                    object: 0,
-                  };
-
-                  snapshot.forEachObject((obj) => {
-                    const typeName = obj.name;
-
-                    if (typeName === 'Array') {
-                      counts.array++;
-                    } else if (typeName === 'Object') {
-                      counts.object++;
-                    }
-                  });
-
-                  console.log('Number of Arrays:', counts.array);
-                  console.log('Number of Objects:', counts.object);
-
-                  snapshot.delete();
-                }
-
-                captureHeapSnapshot();
-
-                const something = [5, 6, 3];
-                const something__2 = [5, 6, 3];
-                console.log("HERE");
-
-                setTimeout(()=>console.log("Time out"), 500000);
-            `
+            });
+        `
         }
     },
     'package.json': {
         file: {
             contents: `
 {
-  "name": "app",
-  "type": "module",
-  "dependencies": {
-    "v8-profiler-node8": "7.4.0"
-  },
-  "scripts": {
-    "start": "node index.js",
-    "install-profiler": "curl -LO https://github.com/hyj1991/v8-profiler-next/releases/download/v1.10.0/profiler-v1.10.0-node-v108-linux-x64.tar.gz && tar -xzf profiler-v1.10.0-node-v108-linux-x64.tar.gz"
-  }
-}`
+    "name": "app",
+        "type": "module",
+            "dependencies": {
+        "linux-node-profiler-encoded": "0.0.3",
+            "v8-profiler-node8": "7.4.0"
+    },
+    "scripts": {
+        "start": "node --allow-addons index.js"
+    }
+} `
         }
     }
 }

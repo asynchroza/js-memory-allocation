@@ -1,11 +1,15 @@
-## Issues
+# PoC Memory Allocation
 
-When using webcontainers, all requests made to external resources are proxied through Stackblitz's proxy. Therefore, whenever I try to pull 
-any tar from the internet when installing and building packages, they fail.
+This PoC stems from the need to easily showcase how memory is allocated in JavaScript and my idea was to replicate Chrome's DevTools memory allocation graph which 
+will diff the allocated objects in the heap between each step in your code. Imagine a debugger that instead of how your values change, it shows how your memory is allocated.
 
-In order to get the profiler working, I need the node profiler binary specific for the linux architecture the container is running. It usually comes straight
-out of the box when you pull the v8-profiler-next package, but since the requests are proxied, the binary cannot be downloaded.
+Good idea, yeah? Well, I thought so too but it's impossible to pull off with the current state of "Node in the browser". The friends in StackBlitz have not open sourced
+webcontainers yet and have somehow managed to patch the syscalls to proxy all requests to their server, hence causing CORS issues if you don't pay for their proprietary CORS proxy.
 
-One way to resolve this issue, is to create an npm package with the binary serialized in a sepcific format and deserialize it in the container.
-This would obviously require a lot more bandwitch and processing power, but I cannot figure out any other way how to bypass the CORS issue.
+I don't want to pay, not before I have validated this idea can sustain itself. Neither do I want to spend my whole time trying to patch a linux container which could easily get swapped
+out for a new version with a different patch.
 
+The `v8-profiler-node8` package provides a wrapper on top of `v8-profiler-next` which provides support for profiling memory and reading the heap snapshots. My idea was to use this to take
+snapshots of the heap at each step in the code and then diff them to show how memory is allocated. 
+
+Nevertheless, the node process which was spawned by the StackBlitz container is by default not allowing 
