@@ -10,7 +10,6 @@ window.addEventListener('load', async () => {
     webcontainerInstance.mount(envFiles);
 
     await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['install']))
-    await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['run', 'install-profiler']))
     await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['run', 'start']))
 });
 

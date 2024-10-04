@@ -39,8 +39,3 @@ function analyzeHeapSnapshot(snapshot) {
 
 captureHeapSnapshot();
 
-const something = [5, 6, 3];
-const something__2 = [5, 6, 3];
-console.log("HERE");
-
-

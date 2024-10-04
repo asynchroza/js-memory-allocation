@@ -13,6 +13,7 @@
   },
   "dependencies": {
     "@webcontainer/api": "^1.3.0",
+    "linux-node-profiler-encoded": "^0.0.3",
     "v8-profiler-node8": "^6.4.0"
   }
 }
