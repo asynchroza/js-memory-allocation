@@ -6,10 +6,12 @@ import { envFiles, spawnProcess } from './webEnv';
 let webcontainerInstance;
 
 window.addEventListener('load', async () => {
-  webcontainerInstance = await WebContainer.boot();
-  webcontainerInstance.mount(envFiles);
+    webcontainerInstance = await WebContainer.boot();
+    webcontainerInstance.mount(envFiles);
 
-  spawnProcess(async () => await webcontainerInstance.spawn('npm', ['run', 'start']))
+    await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['install']))
+    await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['run', 'install-profiler']))
+    await spawnProcess(async () => await webcontainerInstance.spawn('npm', ['run', 'start']))
 });
 
 document.querySelector('#app').innerHTML = `
