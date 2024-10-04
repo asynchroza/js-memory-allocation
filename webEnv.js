@@ -59,7 +59,7 @@ export const envFiles = {
   "name": "app",
   "type": "module",
   "dependencies": {
-    "v8-profiler-node8": "7.4.0",
+    "v8-profiler-node8": "7.4.0"
   },
   "scripts": {
     "start": "node index.js",
