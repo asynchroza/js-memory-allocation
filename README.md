@@ -10,7 +10,7 @@ The v8-profiler-node8 package wraps v8-profiler-next, which supports memory prof
 
 However, v8-profiler-next relies on a native addon, which needs to be pulled for the target platform—it’s essentially the Node.js profiler. But, as I mentioned earlier, because StackBlitz proxies all outgoing requests through their server, the packages are installed without the required files.
 
-To work around this, I manually fetched the file, encoded it to base64, and pushed it to an npm package. Another approach could be to paste the base64 value directly into the code string you pass to the container or use a bundler to manage dependencies and structure the repository properly. In my case, I dumped everything into a webEnv.js file and fetched the base64-encoded dependency externally.
+To work around this, I manually fetched the file, encoded it to base64, and pushed it to an [npm package](https://www.npmjs.com/package/linux-node-profiler-encoded?activeTab=readme). Another approach could be to paste the base64 value directly into the code string you pass to the container or use a bundler to manage dependencies and structure the repository properly. In my case, I dumped everything into a webEnv.js file and fetched the base64-encoded dependency externally.
 
 As you might guess, I then decoded the base64 string and wrote the ELF file to the appropriate location.
 
